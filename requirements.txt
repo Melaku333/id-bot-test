@@ -1,1 +1,4 @@
 aiogram==3.22.0
+playwright==1.55.0
+requests
+pillow
