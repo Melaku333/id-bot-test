@@ -15,7 +15,7 @@ import shutil  # make sure this import is near the top
 import os
 
 # Point this to your actual data_store
-DATA_STORE_PATH = r"C:\Users\melak\Desktop\TestBot\data_store"
+DATA_STORE_PATH = "/app/data_store"
 
 BOT_TOKEN = "8472261647:AAHnrNDH9eUEekXFOCaGPnfXXRf_R13Tr8E"
 BASE_URL = "http://127.0.0.1:7000"
