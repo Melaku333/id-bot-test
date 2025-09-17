@@ -463,6 +463,7 @@ async def replace_command(message: Message):
         f"Please send the new image now.",
         parse_mode="Markdown"
     )
+
 @dp.message(lambda m: m.document or m.photo)
 async def handle_file_or_photo(message: Message):
     user_id = message.from_user.id
@@ -498,6 +499,9 @@ async def handle_file_or_photo(message: Message):
         files = {"file": (file_name, r.content)}
         api_response = requests.post(f"{BASE_URL}/api/upload", files=files)
         await message.answer("✅ File uploaded and processed successfully.")
+@dp.message()
+async def log_all_messages(message: Message):
+    print(f"Received message: {message.text} from {message.from_user.id}")
 
 async def main():
     print("✅ Bot is starting...")
