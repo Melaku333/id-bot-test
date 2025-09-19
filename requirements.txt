@@ -91,3 +91,4 @@ playwright
 requests
 python-pptx
 weasyprint
+pdfkit
