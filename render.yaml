@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: fastapi-bot
+    env: python
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: BASE_URL
+        value: https://fastapi-bot.onrender.com
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
