@@ -90,3 +90,4 @@ aiogram
 playwright
 requests
 python-pptx
+weasyprint
