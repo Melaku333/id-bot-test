@@ -92,3 +92,6 @@ requests
 python-pptx
 weasyprint
 pdfkit
+fastapi
+uvicorn[standard]
+fpdf2
