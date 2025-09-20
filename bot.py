@@ -11,6 +11,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import CallbackQuery
 import shutil  # make sure this import is near the top
 import os
+from aiogram import Router
+
 
 
 # Router instance
