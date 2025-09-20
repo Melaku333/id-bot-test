@@ -22,7 +22,7 @@ DATA_STORE_PATH = os.getenv("DATA_STORE_PATH", "/app/data_store")
 
 
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+dp = Dispatcher(bot=bot)
 
 # Upload command
 @dp.message(Command("upload"))
