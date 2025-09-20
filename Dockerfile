@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose Flask port
-EXPOSE 1000
+EXPOSE 7000
 
 # Start supervisor (runs Flask + Bot together)
 CMD ["/usr/bin/supervisord"]
