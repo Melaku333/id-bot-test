@@ -1,6 +1,6 @@
 import asyncio
 import requests
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, Router   
 from aiogram.filters import Command
 from aiogram.types import Message, FSInputFile
 from playwright.sync_api import sync_playwright
@@ -11,7 +11,6 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import CallbackQuery
 import shutil  # make sure this import is near the top
 import os
-from aiogram import Router
 
 
 
