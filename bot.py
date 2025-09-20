@@ -7,12 +7,14 @@ from playwright.sync_api import sync_playwright
 import tempfile
 from playwright.async_api import async_playwright
 from aiogram.types import FSInputFile
-
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import CallbackQuery
-
 import shutil  # make sure this import is near the top
 import os
+
+
+# Router instance
+router = Router()
 
 # Point this to your actual data_store
 
@@ -20,17 +22,13 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:1000")
 DATA_STORE_PATH = os.getenv("DATA_STORE_PATH", "/app/data_store")
 
-
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot=bot)
-
 # Upload command
-@dp.message(Command("upload"))
+@router.message(Command("upload"))
 async def ask_file(message: Message):
     await message.answer("📂 Please send me a PDF file to upload.")
 
 # Print command
-@dp.message(Command("print"))
+@router.message(Command("print"))
 async def print_handler(message: Message):
     await message.answer("⏳ Preparing your printable PDF...")
     try:
@@ -81,7 +79,7 @@ async def generate_pdf_via_browser():
         return pdf_path
 
 
-@dp.message(Command("download_color"))
+@router.message(Command("download_color"))
 async def download_color_handler(message: Message):
     await message.answer("⏳ Generating color PDF...")
 
@@ -125,7 +123,7 @@ async def download_color_handler(message: Message):
 
 
 # Delete specific ID locally by sending: /delete <person_id>
-@dp.message(Command("delete"))
+@router.message(Command("delete"))
 async def delete_person_handler(message: Message):
     args = message.text.split()
     if len(args) < 2:
@@ -150,7 +148,7 @@ async def delete_person_handler(message: Message):
 
 
 # Delete specific ID locally by sending: /delete <person_id>
-@dp.message(Command("delete"))
+@router.message(Command("delete"))
 async def delete_person_handler(message: Message):
     args = message.text.split()
     if len(args) < 2:
@@ -174,7 +172,7 @@ async def delete_person_handler(message: Message):
         await message.answer(f"❌ Failed to delete local folder for `{person_id}`: {e}", parse_mode="Markdown")
 
 
-@dp.message(Command("list"))
+@router.message(Command("list"))
 async def list_records_handler(message: Message):
     await message.answer("📋 Fetching current records...")
 
@@ -204,7 +202,7 @@ async def list_records_handler(message: Message):
 
 
 
-@dp.callback_query(lambda c: c.data.startswith("edit_photo:"))
+@router.callback_query(lambda c: c.data.startswith("edit_photo:"))
 async def callback_edit_photo(query: CallbackQuery):
     person_id = query.data.split(":")[1]  # e.g., "person_002"
     photo_path = os.path.join(DATA_STORE_PATH, person_id, "photo_original.png")
@@ -257,7 +255,7 @@ pending_replace = {}  # user_id -> person_id
 
 
 # Step 2: handle next photo/document from user
-@dp.message(lambda m: m.photo)
+@router.message(lambda m: m.photo)
 async def replace_photo_file(message: Message):
     user_id = message.from_user.id
     if user_id not in pending_replace:
@@ -297,7 +295,7 @@ async def replace_photo_file(message: Message):
 
 
 # Delete all processed files
-@dp.message(Command("delete_all"))
+@router.message(Command("delete_all"))
 async def delete_all_handler(message: Message):
     await message.answer("🗑️ Deleting all records...")
     try:
@@ -315,7 +313,7 @@ async def delete_all_handler(message: Message):
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-@dp.message(Command("list_photo"))
+@router.message(Command("list_photo"))
 async def list_photo_handler(message: Message):
     """
     Sends all photos from data_store/<person_id>/photo.png
@@ -355,7 +353,7 @@ async def list_photo_handler(message: Message):
         await message.answer(f"❌ Error while listing photos: {e}")
 
 
-@dp.callback_query(lambda c: c.data.startswith("edit_photo:"))
+@router.callback_query(lambda c: c.data.startswith("edit_photo:"))
 async def callback_edit_photo(query: CallbackQuery):
     person_id = query.data.split(":")[1]
     original_path = os.path.join(DATA_STORE_PATH, person_id, "photo_original.png")
@@ -385,7 +383,7 @@ async def callback_edit_photo(query: CallbackQuery):
 
 
 # Delete specific ID by sending: /delete <person_id>
-@dp.message(Command("delete"))
+@router.message(Command("delete"))
 async def delete_person_handler(message: Message):
     args = message.text.split()
     if len(args) < 2:
@@ -409,7 +407,7 @@ async def delete_person_handler(message: Message):
         await message.answer(f"⚠️ Failed to delete ID {person_id}: {e}")
 
 
-@dp.message(Command("download"))
+@router.message(Command("download"))
 async def download_handler(message: Message):
     await message.answer("⏳ Generating PDF...")
     try:
@@ -420,7 +418,7 @@ async def download_handler(message: Message):
 
 
 
-@dp.message(Command("gray_all"))
+@router.message(Command("gray_all"))
 async def gray_all_handler(message: Message):
     await message.answer("⏳ Applying grayscale to all IDs...")
 
@@ -450,7 +448,7 @@ async def gray_all_handler(message: Message):
 
 
 
-@dp.message(Command("replace"))
+@router.message(Command("replace"))
 async def replace_command(message: Message):
     args = message.text.split() if message.text else []
     if len(args) < 2:
@@ -464,7 +462,7 @@ async def replace_command(message: Message):
         f"Please send the new image now.",
         parse_mode="Markdown"
     )
-@dp.message(lambda m: m.document or m.photo)
+@router.message(lambda m: m.document or m.photo)
 async def handle_file_or_photo(message: Message):
     user_id = message.from_user.id
 
@@ -500,7 +498,4 @@ async def handle_file_or_photo(message: Message):
         api_response = requests.post(f"{BASE_URL}/api/upload", files=files)
         await message.answer("✅ File uploaded and processed successfully.")
 
-async def main():
-    print("✅ Bot is starting...")
-    await dp.start_polling(bot)
 
