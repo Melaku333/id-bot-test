@@ -17,7 +17,7 @@ import os
 # Point this to your actual data_store
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:7000")
+BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:1000")
 DATA_STORE_PATH = os.getenv("DATA_STORE_PATH", "/app/data_store")
 
 
