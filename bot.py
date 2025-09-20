@@ -11,7 +11,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import CallbackQuery
 import shutil  # make sure this import is near the top
 import os
-
+from app import bot
 
 
 # Router instance
@@ -464,7 +464,7 @@ async def replace_command(message: Message):
         parse_mode="Markdown"
     )
 @router.message(lambda m: m.document or m.photo)
-async def handle_file_or_photo(message: Message, bot: Bot):
+async def handle_file_or_photo(message: Message):
     user_id = message.from_user.id
 
     if user_id in pending_replace:
