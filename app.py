@@ -922,6 +922,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
+# ✅ import your bot handlers
+from bot import router
+dp.include_router(router)
+
 app = FastAPI()
 
 
