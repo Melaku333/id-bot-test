@@ -463,7 +463,7 @@ async def replace_command(message: Message):
         parse_mode="Markdown"
     )
 @router.message(lambda m: m.document or m.photo)
-async def handle_file_or_photo(message: Message):
+async def handle_file_or_photo(message: Message, bot: Bot):
     user_id = message.from_user.id
 
     if user_id in pending_replace:
