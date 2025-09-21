@@ -944,7 +944,7 @@ async def telegram_webhook(token: str, request: Request):
     if token != BOT_TOKEN:
         return {"error": "Invalid token"}
     data = await request.json()
-    update = Update(**data)
+    update = types.Update(**data)
     await dp.feed_update(bot, update)
     return {"status": "ok"}
 
