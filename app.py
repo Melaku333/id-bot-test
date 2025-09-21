@@ -38,6 +38,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Update
 from aiogram.filters import Command
 from aiogram.types import Message
+import telebot
 
 
 cred = credentials.Certificate("./abogida-b1c87-firebase-adminsdk-fbsvc-b7d80b3e83.json")
@@ -930,31 +931,25 @@ app = FastAPI()
 
 
 
-@app.on_event("startup")
-async def on_startup():
-    # Set webhook when service starts
-    webhook_url = f"{os.getenv('BASE_URL')}/webhook/{BOT_TOKEN}"
-    await bot.set_webhook(webhook_url)
+@app.get("/")
+async def home():
+    return {"status": "running"}
 
-@app.post("/webhook/{token}")
-async def telegram_webhook(token: str, request: Request):
-    if token != BOT_TOKEN:
-        return {"error": "Invalid token"}
-
+@app.post("/webhook")
+async def webhook(request: Request):
     data = await request.json()
-    update = Update(**data)
-    await dp.feed_update(bot, update)
-    return {"status": "ok"}
+    update = telebot.types.Update.de_json(data)
+    bot.process_new_updates([update])
+    return {"ok": True}
 
+# Handlers
+@bot.message_handler(commands=["start"])
+def start(message):
+    bot.reply_to(message, "👋 Hello! Bot is running on webhook mode.")
 
-
-
-
-
-
-@dp.message(Command("start"))
-async def start_handler(message: Message):
-    await message.answer("👋 Hello! Bot is running on webhook mode.")
+@bot.message_handler(commands=["upload"])
+def upload(message):
+    bot.reply_to(message, "📂 Please send me a PDF file to upload.")
 
 
 
