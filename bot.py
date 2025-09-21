@@ -24,7 +24,7 @@ DATA_STORE_PATH = os.getenv("DATA_STORE_PATH", "/app/data_store")
 
 # Upload command
 @router.message(Command("upload"))
-async def ask_file(message: Message):
+async def ask_file(message: Message, bot: Bot):
     await message.answer("📂 Please send me a PDF file to upload.")
 
 # Print command
