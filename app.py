@@ -920,6 +920,7 @@ def inject_user():
 
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+BASE_URL = os.getenv("BASE_URL")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
