@@ -931,26 +931,30 @@ app = FastAPI()
 
 
 
-@app.get("/")
-async def home():
-    return {"status": "running"}
+# Set webhook on startup
+@app.on_event("startup")
+async def on_startup():
+    webhook_url = f"{BASE_URL}/webhook/{BOT_TOKEN}"
+    await bot.set_webhook(webhook_url)
 
-@app.post("/webhook")
-async def webhook(request: Request):
+# Handle Telegram updates
+@app.post("/webhook/{token}")
+async def telegram_webhook(token: str, request: Request):
+    if token != BOT_TOKEN:
+        return {"error": "Invalid token"}
     data = await request.json()
-    update = telebot.types.Update.de_json(data)
-    bot.process_new_updates([update])
-    return {"ok": True}
+    update = Update(**data)
+    await dp.feed_update(bot, update)
+    return {"status": "ok"}
 
 # Handlers
-@bot.message_handler(commands=["start"])
-def start(message):
-    bot.reply_to(message, "👋 Hello! Bot is running on webhook mode.")
+@dp.message(Command("start"))
+async def start_handler(message: Message):
+    await message.answer("👋 Hello! Bot is running on webhook mode.")
 
-@bot.message_handler(commands=["upload"])
-def upload(message):
-    bot.reply_to(message, "📂 Please send me a PDF file to upload.")
-
+@dp.message(Command("upload"))
+async def upload_handler(message: Message):
+    await message.answer("📂 Please send me a PDF file to upload.")
 
 
 if __name__ == '__main__':
